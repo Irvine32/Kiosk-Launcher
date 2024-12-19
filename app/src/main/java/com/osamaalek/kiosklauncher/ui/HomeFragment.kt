@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -75,15 +76,23 @@ class HomeFragment : Fragment() {
         
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         val apps = AppsUtil.getAllApps(requireContext())
+        
+        // Get currently selected app
+        val currentApp = SettingsManager.getAutoLaunchApp(requireContext())
+        
         val adapter = AppSelectionAdapter(apps) { selectedApp ->
             SettingsManager.setAutoLaunchApp(requireContext(), selectedApp.packageName.toString())
+            Toast.makeText(requireContext(), 
+                "Selected ${selectedApp.label} as auto-launch app", 
+                Toast.LENGTH_SHORT).show()
             KioskUtil.stopKioskMode(requireActivity())
         }
         recyclerView.adapter = adapter
 
         AlertDialog.Builder(requireContext())
+            .setTitle("Select Auto-launch App")
             .setView(dialogView)
-            .setPositiveButton("Cancel", null)
+            .setNegativeButton("Cancel", null)
             .show()
     }
 }
