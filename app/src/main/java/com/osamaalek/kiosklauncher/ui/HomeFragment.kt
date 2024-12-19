@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.osamaalek.kiosklauncher.R
 import com.osamaalek.kiosklauncher.adapter.AppSelectionAdapter
+import com.osamaalek.kiosklauncher.util.AppLaunchUtil
 import com.osamaalek.kiosklauncher.util.AppsUtil
 import com.osamaalek.kiosklauncher.util.KioskUtil
 import com.osamaalek.kiosklauncher.util.PasswordManager
@@ -149,10 +150,14 @@ class HomeFragment : Fragment() {
         val currentApp = SettingsManager.getAutoLaunchApp(requireContext())
         
         val adapter = AppSelectionAdapter(apps) { selectedApp ->
-            SettingsManager.setAutoLaunchApp(requireContext(), selectedApp.packageName.toString())
+            val packageName = selectedApp.packageName.toString()
+            SettingsManager.setAutoLaunchApp(requireContext(), packageName)
             Toast.makeText(requireContext(), 
                 "Selected ${selectedApp.label} as auto-launch app", 
                 Toast.LENGTH_SHORT).show()
+            
+            // Launch the selected app in full screen to test it
+            AppLaunchUtil.launchAppFullScreen(requireContext(), packageName)
         }
         recyclerView.adapter = adapter
 

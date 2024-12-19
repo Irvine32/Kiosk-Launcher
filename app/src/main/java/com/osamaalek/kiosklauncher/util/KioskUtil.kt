@@ -5,8 +5,8 @@ import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.os.UserManager
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import com.osamaalek.kiosklauncher.MyDeviceAdminReceiver
 import com.osamaalek.kiosklauncher.ui.MainActivity
@@ -24,14 +24,10 @@ class KioskUtil {
                 // Check if there's an auto-launch app configured
                 val autoLaunchPackage = SettingsManager.getAutoLaunchApp(context)
                 if (autoLaunchPackage != null) {
-                    try {
-                        val launchIntent = context.packageManager.getLaunchIntentForPackage(autoLaunchPackage)
-                        if (launchIntent != null) {
-                            context.startActivity(launchIntent)
-                        }
-                    } catch (e: Exception) {
-                        Toast.makeText(context, "Failed to launch selected app", Toast.LENGTH_SHORT).show()
-                    }
+                    // Add a small delay to ensure kiosk mode is fully started
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        AppLaunchUtil.launchAppFullScreen(context, autoLaunchPackage)
+                    }, 500)
                 }
             } else {
                 context.startActivity(
