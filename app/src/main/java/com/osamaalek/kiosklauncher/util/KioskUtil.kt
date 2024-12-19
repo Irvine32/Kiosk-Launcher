@@ -5,8 +5,10 @@ import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
+import android.os.UserManager
 import android.widget.Toast
 import com.osamaalek.kiosklauncher.MyDeviceAdminReceiver
 import com.osamaalek.kiosklauncher.ui.MainActivity
