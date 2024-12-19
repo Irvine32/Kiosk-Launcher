@@ -20,11 +20,25 @@ class KioskUtil {
 
             if (devicePolicyManager.isAdminActive(myDeviceAdmin)) {
                 context.startLockTask()
+                
+                // Check if there's an auto-launch app configured
+                val autoLaunchPackage = SettingsManager.getAutoLaunchApp(context)
+                if (autoLaunchPackage != null) {
+                    try {
+                        val launchIntent = context.packageManager.getLaunchIntentForPackage(autoLaunchPackage)
+                        if (launchIntent != null) {
+                            context.startActivity(launchIntent)
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "Failed to launch selected app", Toast.LENGTH_SHORT).show()
+                    }
+                }
             } else {
                 context.startActivity(
                     Intent().setComponent(
                         ComponentName(
-                            "com.android.settings", "com.android.settings.DeviceAdminSettings"
+                            "com.android.settings",
+                            "com.android.settings.DeviceAdminSettings"
                         )
                     )
                 )
@@ -52,11 +66,14 @@ class KioskUtil {
         }
 
         fun stopKioskMode(context: Activity) {
-            val devicePolicyManager =
-                context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-            val myDeviceAdmin = ComponentName(context, MyDeviceAdminReceiver::class.java)
-            if (devicePolicyManager.isAdminActive(myDeviceAdmin)) {
+            try {
                 context.stopLockTask()
+            } catch (e: Exception) {
+                Toast.makeText(
+                    context,
+                    "Failed to stop kiosk mode",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             if (devicePolicyManager.isDeviceOwnerApp(context.packageName)) {
                 devicePolicyManager.clearUserRestriction(
