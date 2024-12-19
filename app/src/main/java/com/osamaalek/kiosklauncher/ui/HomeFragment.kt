@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.osamaalek.kiosklauncher.R
 import com.osamaalek.kiosklauncher.util.KioskUtil
+import com.osamaalek.kiosklauncher.util.PasswordManager
 
 class HomeFragment : Fragment() {
 
