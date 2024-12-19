@@ -66,6 +66,10 @@ class KioskUtil {
         }
 
         fun stopKioskMode(context: Activity) {
+            val devicePolicyManager =
+                context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+            val myDeviceAdmin = ComponentName(context, MyDeviceAdminReceiver::class.java)
+
             try {
                 context.stopLockTask()
             } catch (e: Exception) {
@@ -76,6 +80,19 @@ class KioskUtil {
                 ).show()
             }
             if (devicePolicyManager.isDeviceOwnerApp(context.packageName)) {
+                devicePolicyManager.clearUserRestriction(
+                    myDeviceAdmin, UserManager.DISALLOW_SAFE_BOOT
+                )
+                devicePolicyManager.clearUserRestriction(
+                    myDeviceAdmin, UserManager.DISALLOW_FACTORY_RESET
+                )
+                devicePolicyManager.clearUserRestriction(
+                    myDeviceAdmin, UserManager.DISALLOW_ADD_USER
+                )
+                devicePolicyManager.clearUserRestriction(
+                    myDeviceAdmin, UserManager.DISALLOW_MOUNT_PHYSICAL_MEDIA
+                )
+                devicePolicyManager.setLockTaskPackages(myDeviceAdmin, arrayOf())
                 devicePolicyManager.clearUserRestriction(
                     myDeviceAdmin, UserManager.DISALLOW_UNINSTALL_APPS
                 )

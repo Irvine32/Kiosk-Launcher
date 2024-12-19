@@ -1,7 +1,6 @@
 package com.osamaalek.kiosklauncher.ui
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,8 +33,8 @@ class HomeFragment : Fragment() {
         imageButtonExit = view.findViewById(R.id.imageButton_exit)
 
         fabApps.setOnClickListener {
-            val intent = Intent(requireContext(), AppsActivity::class.java)
-            startActivity(intent)
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, AppsListFragment()).commit()
         }
 
         imageButtonExit.setOnClickListener {
