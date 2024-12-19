@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/button_select_app"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Auto-launch App"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/button_change_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Change Password"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/button_exit_kiosk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Exit Kiosk Mode"/>
+
+</LinearLayout>

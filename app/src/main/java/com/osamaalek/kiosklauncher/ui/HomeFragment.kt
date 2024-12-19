@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
@@ -56,7 +57,7 @@ class HomeFragment : Fragment() {
             .setPositiveButton("OK") { _, _ ->
                 val password = passwordEditText.text.toString()
                 if (PasswordManager.checkPassword(requireContext(), password)) {
-                    showAppSelectionDialog()
+                    showSettingsDialog()
                 } else {
                     AlertDialog.Builder(requireContext())
                         .setTitle("Error")
@@ -64,6 +65,73 @@ class HomeFragment : Fragment() {
                         .setPositiveButton("OK", null)
                         .show()
                 }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showSettingsDialog() {
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_settings, null)
+        
+        val selectAppButton = dialogView.findViewById<Button>(R.id.button_select_app)
+        val changePasswordButton = dialogView.findViewById<Button>(R.id.button_change_password)
+        val exitKioskButton = dialogView.findViewById<Button>(R.id.button_exit_kiosk)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        selectAppButton.setOnClickListener {
+            dialog.dismiss()
+            showAppSelectionDialog()
+        }
+
+        changePasswordButton.setOnClickListener {
+            dialog.dismiss()
+            showChangePasswordDialog()
+        }
+
+        exitKioskButton.setOnClickListener {
+            dialog.dismiss()
+            KioskUtil.stopKioskMode(requireActivity())
+        }
+
+        dialog.show()
+    }
+
+    private fun showChangePasswordDialog() {
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_change_password, null)
+        
+        val newPasswordEdit = dialogView.findViewById<EditText>(R.id.editText_new_password)
+        val confirmPasswordEdit = dialogView.findViewById<EditText>(R.id.editText_confirm_password)
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Change Password")
+            .setView(dialogView)
+            .setPositiveButton("Save") { _, _ ->
+                val newPassword = newPasswordEdit.text.toString()
+                val confirmPassword = confirmPasswordEdit.text.toString()
+
+                if (newPassword.isEmpty()) {
+                    Toast.makeText(requireContext(), 
+                        "Password cannot be empty", 
+                        Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                if (newPassword != confirmPassword) {
+                    Toast.makeText(requireContext(), 
+                        "Passwords do not match", 
+                        Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                PasswordManager.setPassword(requireContext(), newPassword)
+                Toast.makeText(requireContext(), 
+                    "Password changed successfully", 
+                    Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("Cancel", null)
             .show()
@@ -85,14 +153,13 @@ class HomeFragment : Fragment() {
             Toast.makeText(requireContext(), 
                 "Selected ${selectedApp.label} as auto-launch app", 
                 Toast.LENGTH_SHORT).show()
-            KioskUtil.stopKioskMode(requireActivity())
         }
         recyclerView.adapter = adapter
 
         AlertDialog.Builder(requireContext())
             .setTitle("Select Auto-launch App")
             .setView(dialogView)
-            .setNegativeButton("Cancel", null)
+            .setPositiveButton("OK", null)
             .show()
     }
 }
